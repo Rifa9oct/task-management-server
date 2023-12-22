@@ -29,6 +29,18 @@ async function run() {
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
 
+    const tasksCollection = client.db('taskDB').collection('tasks');
+
+    app.get('/tasks', async (req, res) => {
+      const result = await tasksCollection.find().toArray();
+      res.send(result);
+    })
+
+    app.post("/tasks", async (req, res) => {
+      const taskInfo = req.body;
+      const result = await tasksCollection.insertOne(taskInfo);
+      res.send(result);
+    })
 
 
 
@@ -42,10 +54,10 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get ('/',(req, res) => {
-    res.send("Task Management Server is running...")
+app.get('/', (req, res) => {
+  res.send("Task Management Server is running...")
 })
 
-app.listen(port,() => {
-    console.log(`Task Management Server is running: ${port}`)
+app.listen(port, () => {
+  console.log(`Task Management Server is running: ${port}`)
 })
