@@ -49,6 +49,19 @@ async function run() {
       res.send(result);
     })
 
+    app.patch("/tasks/:id", async (req, res) => {
+      const id = req.params.id;
+      const mtask = req.body;
+      // console.log(mtask)
+      const filter = { _id: new ObjectId(id) }
+      const updatedTask = {
+        $set: {
+          status: mtask.status
+        }
+      }
+      const result = await tasksCollection.updateOne(filter,updatedTask);
+      res.send(result);
+    })
 
 
 
