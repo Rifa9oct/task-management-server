@@ -34,6 +34,30 @@ async function run() {
       res.send(result);
     })
 
+    app.get("/tasks/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await tasksCollection.findOne(query);
+      res.send(result);
+    })
+    
+    //update task
+    app.put("/tasks/:id", async (req, res) => {
+      const id = req.params.id;
+      const task = req.body;
+      const filter = { _id: new ObjectId(id) }
+      const UpdateTask = {
+        $set: {
+          title: task.title,
+          description: task.description,
+          priority: task.priority,
+          duration: task.duration,
+        }
+      }
+      const result = await tasksCollection.updateOne(filter, UpdateTask);
+      res.send(result);
+    })
+
     app.post("/tasks", async (req, res) => {
       const taskInfo = req.body;
       const result = await tasksCollection.insertOne(taskInfo);
@@ -47,10 +71,10 @@ async function run() {
       res.send(result);
     })
 
+    //update status
     app.patch("/tasks/:id", async (req, res) => {
       const id = req.params.id;
       const mtask = req.body;
-      // console.log(mtask)
       const filter = { _id: new ObjectId(id) }
       const updatedTask = {
         $set: {
